@@ -68,7 +68,7 @@ Setup Platformio
 
     PATH="$PATH:$HOME/.platformio/penv/bin"
 
-### 5. UDEV Rule
+### 7. UDEV Rule
 Download the udev rules from Teensy's website:
 
     wget https://www.pjrc.com/teensy/00-teensy.rules
@@ -484,16 +484,6 @@ Magnetometer calibration should be taken on board with all hardware installed, i
 ```
 sudo apt-get install ros-humble-robot-calibration -y
 ros2 run robot_calibration magnetometer_calibration
-```
-
-## Use esp32 with micro ros wifi transport, OTA, syslog and Lidar UDP transport
-
-The esp32 can run micro ros wifi transport. The robot can be built without a robot computer on it. All the ROS2 packages and Platformio are running on the desktop computer. The build will be much faster than a robot computer like Pi4.
-
-### Start the micro ros wifi transport agent.
-```
-ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
-```
 
 ## URDF
 Once the hardware is done, you can go back to [linorobot2](https://github.com/linorobot/linorobot2#urdf) package and start defining the robot's URDF.
