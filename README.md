@@ -22,6 +22,18 @@ Add platformio to your $PATH:
 Install Microros https://micro.ros.org/docs/tutorials/core/first_application_linux/
 
 ### 5. Install Slamtec sllidar_ros2
+#### Supported SLAMTEC LIDAR
+| Lidar Model |
+| ---------------------- |
+|RPLIDAR A1              |
+|RPLIDAR A2              |
+|RPLIDAR A3              |
+|RPLIDAR C1              |
+|RPLIDAR S1              |
+|RPLIDAR S2              |
+|RPLIDAR S3              |
+|RPLIDAR S2E             |
+|RPLIDAR T1              |
 
 Install sllidar https://github.com/Slamtec/sllidar_ros2
 
@@ -51,22 +63,6 @@ Custom BASE Type
 Custom Lidar 
 
     export LINOROBOT2_LASER_SENSOR=a1
-
-## Supported SLAMTEC LIDAR
-
-| Lidar Model |
-| ---------------------- |
-|RPLIDAR A1              |
-|RPLIDAR A2              |
-|RPLIDAR A3              |
-|RPLIDAR C1              |
-|RPLIDAR S1              |
-|RPLIDAR S2              |
-|RPLIDAR S3              |
-|RPLIDAR S2E             |
-|RPLIDAR T1              |
-
-    
 
 Setup Platformio 
 
