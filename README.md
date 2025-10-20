@@ -1,3 +1,25 @@
+# Setup for ubuntu .bashrc
+    cd 
+    nano .bashrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Mecanum-Robot-Navigation
 Mecanum Robot Navigation
 ## Installation
