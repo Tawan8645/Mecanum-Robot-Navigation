@@ -97,6 +97,50 @@ Supported MAGs:
 - **AK09918**
 - **QMC5883L**
 
+### 4. Connection Diagram
+Below are connection diagrams you can follow for each supported motor driver and IMU. For simplicity, only one motor connection is provided but the same diagram can be used to connect the rest of the motors. You are free to decide which microcontroller pin to use just ensure that the following are met:
+
+- Reserve SCL0 and SDA0 (pins 18 and 19 on Teensy boards) for IMU.
+
+- When connecting the motor driver's EN/PWM pin, ensure that the microcontroller pin used is PWM enabled. You can check out PJRC's [pinout page](https://www.pjrc.com/teensy/pinout.html) for more info.
+
+Alternatively, you can also use the pre-defined pin assignments in lino_base_config.h. Teensy 3.x and 4.x have different mapping of PWM pins, read the notes beside each pin assignment in [lino_base_config.h](https://github.com/linorobot/linorobot2_hardware/blob/master/config/lino_base_config.h#L112) carefully to avoid connecting your driver's PWM pin to a non PWM pin on Teensy. 
+
+All diagrams below are based on Teensy 4.0 microcontroller and GY85 IMU. Click the images for higher resolution.
+
+#### 4.1 GENERIC 2 IN
+
+![generic_2_in_connection](docs/generic_2_in_connection.png)
+
+#### 4.2 GENERIC 1 IN
+
+![generic_1_in_connection](docs/generic_1_in_connection.png)
+
+#### 4.3 BTS7960
+
+![bts7960_connection](docs/bts7960_connection.png)
+
+#### 4.4 IMU
+
+![imu_connection](docs/imu_connection.png)
+
+Take note of the IMU's correct orientation when mounted on the robot. Ensure that the IMU's axes are facing the correct direction:
+
+- **X** - Front
+- **Y** - Left
+- **Z** - Up
+
+#### 4.5 System Diagram
+Reference designs you can follow in building your robot.
+
+A minimal setup with a 5V powered robot computer.
+![minimal_setup](docs/minimal_setup.png)
+
+A more advanced setup with a 19V powered computer and USB hub connected to sensors.
+![advanced_setup](docs/advanced_setup.png)
+
+For bigger robots, you can add an emergency switch in between the motor drivers' power supply and motor drivers.
+
 
 
     
