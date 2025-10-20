@@ -1,4 +1,13 @@
-# Setup for .bashrc Ubuntu
+# Mecanum-Robot-Navigation
+Mecanum Robot Navigation
+
+### 1. UBUNTO Installation
+
+### 2. ROS2 and linorobot2 installation
+It is assumed that you already have ROS2 and linorobot2 package installed. If you haven't, go to [linorobot2](https://github.com/linorobot/linorobot2) package for installation guide.
+
+
+### 3. Setup for .bashrc Ubuntu
 
     cd 
     nano .bashrc
@@ -50,8 +59,7 @@ Setup Platformio
 
 
 
-# Mecanum-Robot-Navigation
-Mecanum Robot Navigation
+
 ## Installation
 
 Depend on your use case, for esp32, the robot can run micro ros wifi transport without a robot computer (eg Pi 4) on it. All the software will be installed on your desktop computer. In other case, all software mentioned in this guide should be installed on the robot computer.
