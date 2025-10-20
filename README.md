@@ -63,8 +63,40 @@ WHEEL3 WHEEL4 (4WD/Mecanum)
 
 --------------BACK--------------
 
-
 ![mecanum_wheels_orientation](docs/mecanum_wheels_orientation.png)
+
+### 2. Motor Drivers
+
+Supported Motor Drivers:
+
+- **GENERIC_2_IN_MOTOR_DRIVER** - Motor drivers that have EN (pwm) pin, and 2 direction pins (usually DIRA, DIRB pins). Example: L298 Breakout boards.
+
+- **GENERIC_1_IN_MOTOR_DRIVER** - Motor drivers that have EN (pwm) pin, and 1 direction pin (usual DIR pin). These drivers usually have logic gates included to lessen the pins required in controlling the driver. Example: Pololu MC33926 Motor Driver Shield.
+
+- **BTS7960_MOTOR_DRIVER** - BTS7960 motor driver.
+
+- **ESC_MOTOR_DRIVER** - Bi-directional (forward/reverse) electronic speed controllers.
+
+The motor drivers are configurable from the config file explained in the later part of this document.
+
+### 3. Inertial Measurement Unit (IMU)
+
+Supported IMUs:
+
+- **GY-85**
+- **MPU6050**
+- **MPU9150**
+- **MPU9250**
+- **BNO055**
+
+Supported MAGs:
+
+- **HMC5883L**
+- **AK8963**
+- **AK8975**
+- **AK09918**
+- **QMC5883L**
+
 
 
     
