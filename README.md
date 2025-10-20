@@ -249,7 +249,7 @@ Constants' Meaning:
 
 - **USE_MPU9250_IMU** - MPU9250 IMUs.
   
-- **USE_BNO055_IMU** - MPU9250 IMUs.
+- **USE_BNO055_IMU** - BNO055 IMUs.
 
 - **USE_HMC5883L_IMU** - HMC5883L MAGs.
 
@@ -265,32 +265,32 @@ Constants' Meaning:
 
 Next, fill in the robot settings accordingly:
 
-#define K_P 0.20      //0.15                      
-#define K_I 0.20       //0.15                      
-#define K_D 0.20       //0.15                     
-/*
-ROBOT ORIENTATION
-         FRONT
-    MOTOR1  MOTOR2  (2WD/ACKERMANN)
-    MOTOR3  MOTOR4  (4WD/MECANUM)
-         BACK
-*/
-#define MOTOR_MAX_RPM 120       
-#define MAX_RPM_RATIO 0.8
-#define MOTOR_OPERATING_VOLTAGE 12
-#define MOTOR_POWER_MAX_VOLTAGE 12
-#define MOTOR_POWER_MEASURED_VOLTAGE 12   
-
-#define COUNTS_PER_REV1 1125 //960
-#define COUNTS_PER_REV2 1074 //960
-#define COUNTS_PER_REV3 1079
-#define COUNTS_PER_REV4 1084
-
-#define WHEEL_DIAMETER 0.0605               
-#define LR_WHEELS_DISTANCE 0.20     
-
-#define PWM_BITS 8                         
-#define PWM_FREQUENCY 8000
+	#define K_P 0.20      //0.15                      
+	#define K_I 0.20       //0.15                      
+	#define K_D 0.20       //0.15                     
+	/*
+	ROBOT ORIENTATION
+	         FRONT
+	    MOTOR1  MOTOR2  (2WD/ACKERMANN)
+	    MOTOR3  MOTOR4  (4WD/MECANUM)
+	         BACK
+	*/
+	#define MOTOR_MAX_RPM 120       
+	#define MAX_RPM_RATIO 0.8
+	#define MOTOR_OPERATING_VOLTAGE 12
+	#define MOTOR_POWER_MAX_VOLTAGE 12
+	#define MOTOR_POWER_MEASURED_VOLTAGE 12   
+	
+	#define COUNTS_PER_REV1 1125 //960
+	#define COUNTS_PER_REV2 1074 //960
+	#define COUNTS_PER_REV3 1079
+	#define COUNTS_PER_REV4 1084
+	
+	#define WHEEL_DIAMETER 0.0605               
+	#define LR_WHEELS_DISTANCE 0.20     
+	
+	#define PWM_BITS 8                         
+	#define PWM_FREQUENCY 8000
 
 Constants' Meaning:
 
