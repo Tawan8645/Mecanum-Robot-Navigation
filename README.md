@@ -557,13 +557,3 @@ Once the hardware is done, you can go back to [linorobot2](https://github.com/li
 
 - To compile and upload the project
 ```
-pio run --target upload -e myrobot
-```
-- To start docker based microROS agent
- ```
- docker run -it --rm --net=host microros/micro-ros-agent:humble udp4 --port 8888 -v6
-```
-- In another separate terminal you can run following ROS2 command to make sure the linorobot topics are getting published over wifi from esp32
-```
-ros2 topic list
-```
