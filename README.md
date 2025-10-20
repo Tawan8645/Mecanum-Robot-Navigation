@@ -17,14 +17,15 @@ Add platformio to your $PATH:
     echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
     source $HOME/.bashrc
 
-### 3. Install Microros 
+### 4. Install Micro ros 
 
 Install Microros https://micro.ros.org/docs/tutorials/core/first_application_linux/
 
+### 5. Install Slamtec sllidar_ros2
 
+Install sllidar https://github.com/Slamtec/sllidar_ros2
 
-
-### 4. Setup for .bashrc Ubuntu
+### 6. Setup for .bashrc Ubuntu
 
     cd 
     nano .bashrc
@@ -36,7 +37,7 @@ source ws
     source /opt/ros/jazzy/setup.bash
     source ~/Robot_Control_ws/install/setup.bash
     source ~/microros_ws/install/setup.bash
-    source ~/rplidar_a1_ws/install/setup.bash
+    source ~/sllidar_a1_ws/install/setup.bash
     
 connect ros robot to pc master
 
