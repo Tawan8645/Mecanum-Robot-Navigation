@@ -9,15 +9,21 @@ source WS
     source ~/rplidar_a1_ws/install/setup.bash
     
 connect ros robot to pc master
+
     export ROS_MASTER_URI=http://10.182.81.183:11311
     export ROS_IP=10.182.81.183:11311
+    
 Custom BASE Type
+
     export LINOROBOT2_BASE=mecanum
+    
 Custom Lidar 
+
     export LINOROBOT2_LASER_SENSOR=a1
     
 
 Setup Platformio 
+
     PATH="$PATH:$HOME/.platformio/penv/bin"
 
     
