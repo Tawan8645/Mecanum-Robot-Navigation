@@ -1,8 +1,12 @@
 # Setup for .bashrc Ubuntu
+
     cd 
     nano .bashrc
-source WS
+    
+source ws
+
     # === Linorobot2 ROS 2 Jazzy Setup ===
+    
     source /opt/ros/jazzy/setup.bash
     source ~/Robot_Control_ws/install/setup.bash
     source ~/microros_ws/install/setup.bash
