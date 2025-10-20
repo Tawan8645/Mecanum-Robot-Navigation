@@ -25,21 +25,6 @@ Install Microros https://micro.ros.org/docs/tutorials/core/first_application_lin
 
 Install sllidar https://github.com/Slamtec/sllidar_ros2
 
-## Supported SLAMTEC LIDAR
-
-| Lidar Model |
-| ---------------------- |
-|RPLIDAR A1              |
-|RPLIDAR A2              |
-|RPLIDAR A3              |
-|RPLIDAR C1              |
-|RPLIDAR S1              |
-|RPLIDAR S2              |
-|RPLIDAR S3              |
-|RPLIDAR S2E             |
-|RPLIDAR T1              |
-
-
 ### 6. Setup for .bashrc Ubuntu
 
     cd 
@@ -66,6 +51,21 @@ Custom BASE Type
 Custom Lidar 
 
     export LINOROBOT2_LASER_SENSOR=a1
+
+## Supported SLAMTEC LIDAR
+
+| Lidar Model |
+| ---------------------- |
+|RPLIDAR A1              |
+|RPLIDAR A2              |
+|RPLIDAR A3              |
+|RPLIDAR C1              |
+|RPLIDAR S1              |
+|RPLIDAR S2              |
+|RPLIDAR S3              |
+|RPLIDAR S2E             |
+|RPLIDAR T1              |
+
     
 
 Setup Platformio 
