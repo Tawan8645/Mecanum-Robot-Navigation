@@ -30,16 +30,16 @@ Install sllidar https://github.com/Slamtec/sllidar_ros2
     cd 
     nano .bashrc
     
-source ws
+Source ws
 
-    # === Linorobot2 ROS 2 Jazzy Setup ===
+    # === WS ROS 2 Jazzy Setup ===
     
     source /opt/ros/jazzy/setup.bash
     source ~/Robot_Control_ws/install/setup.bash
     source ~/microros_ws/install/setup.bash
     source ~/sllidar_a1_ws/install/setup.bash
     
-connect ros robot to pc master
+Connect Ros Robot To Pc Master
 
     export ROS_MASTER_URI=http://10.182.81.183:11311
     export ROS_IP=10.182.81.183:11311
