@@ -318,38 +318,6 @@ Constants' Meaning:
 
 - **PWM_FREQUENCY** - Frequency of the PWM signals used to control the motor drivers. You can use the default value if you're unsure what to put here. More info [here](https://www.pjrc.com/teensy/td_pulse.html).
 
-*WIFI related settings, only for esp32*
-
-- **USE_WIFI_TRANSPORT** - use micro ros wifi transport.
-
-- **AGENT_IP** - micro ros agent IP. eg. { 192, 168, 1, 100 }
-
-- **AGENT_PORT** - micro ros agent port. default 8888
-
-- **WIFI_AP_LIST** - Enable WiFi with null terminated list of multiple APs SSID and password. eg. {{"WIFI_SSID1", "WIFI_PASSWORD1"}, {"WIFI_SSID2", "WIFI_PASSWORD2"}, {NULL}} . The AP with strongest signal will be used. When wifi signal is too low, the current AP will be disconnected and reconnect the AP with the strongest signal.
-
-- **USE_ARDUINO_OTA** - Arduino OTA up load protocol support
-
-- **USE_SYSLOG** - logging to remote syslog server.
-
-- **SYSLOG_SERVER** - syslog server name or IP.
-
-- **SYSLOG_PORT** - syslog server udp port. default 514
-
-- **DEVICE_HOSTNAME** - my device name to syslog. default "linorobot2"
-
-- **APP_NAME** - my app name to syslog. default "hardware"
-
-- **USE_LIDAR_UDP** - push Lidar data to UDP server, which will decode the data and publish laser scan message.
-
-- **LIDAR_RXD** - RXD pin for serial data from Lidar
-
-- **LIDAR_BAUDRATE**
-
-- **LIDAR_SERVER** - Lidar server IP address, eg. { 192, 168, 1, 100 }
-
-- **LIDAR_PORT** - Lidar server UDP port, eg. 8889
-
 *Optional settings*
 
 - **BAUDRATE** - serial baudrate. default 115200 is a bit tight. recommanded 230400.
@@ -379,52 +347,48 @@ Only modify the pin assignments under the motor driver constant that you are usi
 
 The pin assignments found in lino_base_config.h are based on Linorobot's PCB board. You can wire up your electronic components based on the default pin assignments but you're also free to modify it depending on your setup. Just ensure that you're connecting MOTORX_PWM pins to a PWM enabled pin on the microcontroller and reserve SCL and SDA pins for the IMU, and pin 13 (built-in LED) for debugging.
 
-    // INVERT ENCODER COUNTS
-    #define MOTOR1_ENCODER_INV false 
-    #define MOTOR2_ENCODER_INV false 
-    #define MOTOR3_ENCODER_INV false 
-    #define MOTOR4_ENCODER_INV false 
-
-    // INVERT MOTOR DIRECTIONS
-    #define MOTOR1_INV false
-    #define MOTOR2_INV false
-    #define MOTOR3_INV false
-    #define MOTOR4_INV false
-
-    // ENCODER PINS
-    #define MOTOR1_ENCODER_A 14
-    #define MOTOR1_ENCODER_B 15 
-
-    #define MOTOR2_ENCODER_A 11
-    #define MOTOR2_ENCODER_B 12 
-
-    #define MOTOR3_ENCODER_A 17
-    #define MOTOR3_ENCODER_B 16 
-
-    #define MOTOR4_ENCODER_A 9
-    #define MOTOR4_ENCODER_B 10
-
-    // MOTOR PINS
-    #ifdef USE_GENERIC_2_IN_MOTOR_DRIVER
-        #define MOTOR1_PWM 21 //Pin no 21 is not a PWM pin on Teensy 4.x, you can swap it with pin no 1 instead.
-        #define MOTOR1_IN_A 20
-        #define MOTOR1_IN_B 1 
-
-        #define MOTOR2_PWM 5
-        #define MOTOR2_IN_A 6
-        #define MOTOR2_IN_B 8
-
-        #define MOTOR3_PWM 22
-        #define MOTOR3_IN_A 23
-        #define MOTOR3_IN_B 0
-
-        #define MOTOR4_PWM 4
-        #define MOTOR4_IN_A 3
-        #define MOTOR4_IN_B 2
-
-        #define PWM_MAX pow(2, PWM_BITS) - 1
-        #define PWM_MIN -PWM_MAX
-    #endif  
+    // Fixed pin numbers for ESP32-WROOM-32D 38 PIN VERSION
+	/// ENCODER PINS
+	#define MOTOR1_ENCODER_A 15
+	#define MOTOR1_ENCODER_B 2 
+	#define MOTOR1_ENCODER_INV true  
+	
+	#define MOTOR2_ENCODER_A 4
+	#define MOTOR2_ENCODER_B 16
+	#define MOTOR2_ENCODER_INV false 
+	
+	#define MOTOR3_ENCODER_A 17 
+	#define MOTOR3_ENCODER_B 5
+	#define MOTOR3_ENCODER_INV true 
+	
+	#define MOTOR4_ENCODER_A  18
+	#define MOTOR4_ENCODER_B  19
+	#define MOTOR4_ENCODER_INV false 
+	
+	// Motor Pins
+	  #define MOTOR1_PWM -1 //DON'T TOUCH THIS! This is just a placeholder
+	  #define MOTOR1_IN_A 13
+	  #define MOTOR1_IN_B 12
+	  #define MOTOR1_INV false
+	
+	  #define MOTOR2_PWM -1 //DON'T TOUCH THIS! This is just a placeholder
+	  #define MOTOR2_IN_A 14
+	  #define MOTOR2_IN_B 27
+	  #define MOTOR2_INV true
+	
+	  #define MOTOR3_PWM -1 //DON'T TOUCH THIS! This is just a placeholder
+	  #define MOTOR3_IN_A 26
+	  #define MOTOR3_IN_B 25
+	  #define MOTOR3_INV true
+	
+	  #define MOTOR4_PWM -1 //DON'T TOUCH THIS! This is just a placeholder
+	  #define MOTOR4_IN_A 33
+	  #define MOTOR4_IN_B 32
+	  #define MOTOR4_INV false
+	
+	#define PWM_MAX pow(2, PWM_BITS) - 1
+	#define PWM_MIN -(pow(2, PWM_BITS) - 1)
+	#endif
 
 Constants' Meaning:
 
