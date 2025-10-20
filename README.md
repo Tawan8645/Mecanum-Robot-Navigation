@@ -2,7 +2,7 @@
 Mecanum Robot Navigation
 
 ### 1. UBUNTO Installation
-Download and install Ubuntu https://ubuntu.com/download/desktop
+Download and install Ubuntu for Raspberry pi & PC https://ubuntu.com/download/desktop
 
 ### 2. ROS2 and linorobot2 installation
 It is assumed that you already have ROS2 and linorobot2 package installed. If you haven't, go to [linorobot2](https://github.com/linorobot/linorobot2) package for installation guide.
@@ -49,6 +49,21 @@ Custom Lidar
 Setup Platformio 
 
     PATH="$PATH:$HOME/.platformio/penv/bin"
+
+## Building the robot
+
+### 1. Robot orientation
+Robot Orientation:
+
+-------------FRONT-------------
+
+WHEEL1 WHEEL2 (2WD)
+
+WHEEL3 WHEEL4 (4WD/Mecanum)
+
+--------------BACK--------------
+![mecanum_wheels_orientation](docs/mecanum_wheels_orientation.png)
+
 
     
 
