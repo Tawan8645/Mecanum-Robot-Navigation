@@ -17,6 +17,12 @@ Add platformio to your $PATH:
     echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
     source $HOME/.bashrc
 
+### 3. Install Microros 
+
+Install Microros https://micro.ros.org/docs/tutorials/core/first_application_linux/
+
+
+
 
 ### 4. Setup for .bashrc Ubuntu
 
