@@ -158,15 +158,29 @@ platformio.ini
 [env:myrobot]
 platform = espressif32
 board = esp32dev
+framework = arduino
+;board_build.mcu = esp32
 board_build.f_flash = 80000000L
 board_build.flash_mode = qio
 upload_port = /dev/ttyUSB0
 upload_protocol = esptool
+board_microros_distro = humble
+board_microros_transport = serial
+monitor_speed = 115200
+monitor_port = /dev/ttyUSB0
+monitor_dtr = 0
+monitor_rts = 0
 lib_deps =
     ${env.lib_deps}
-    https://github.com/RoboticsBrno/ServoESP32
-    https://github.com/madhephaestus/ESP32Encoder
+	madhephaestus/ESP32Servo@^0.13.0
+	madhephaestus/ESP32Encoder @ ^0.10.1
+	adafruit/Adafruit Unified Sensor@^1.1.14
+	adafruit/Adafruit BusIO@^1.16.1
+	adafruit/Adafruit BNO055@^1.6.3
+	sparkfun/SparkFun u-blox GNSS Arduino Library@^2.2.27
+	thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@^4.6.1
 build_flags =
+    -I ~/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src
     -I ../config
     -D USE_MYROBOT_CONFIG
 ```
@@ -203,9 +217,10 @@ build_flags =
 ### 1. Robot Settings
 Open your custom configuration file. Uncomment the base, motor driver and IMU you want to use for your robot. For example:
 
-    #define LINO_BASE DIFFERENTIAL_DRIVE
-    #define USE_GENERIC_2_IN_MOTOR_DRIVER
-    #define USE_GY85_IMU
+    #define LINO_BASE MECANUM 
+    #define USE_BTS7960_MOTOR_DRIVER 
+    #define USE_BNO055_IMU
+    //#define USE_MPU6050_IMU
 
 Constants' Meaning:
 
@@ -233,6 +248,8 @@ Constants' Meaning:
 - **USE_MPU9150_IMU** - MPU9150 IMUs.
 
 - **USE_MPU9250_IMU** - MPU9250 IMUs.
+  
+- **USE_BNO055_IMU** - MPU9250 IMUs.
 
 - **USE_HMC5883L_IMU** - HMC5883L MAGs.
 
@@ -248,26 +265,32 @@ Constants' Meaning:
 
 Next, fill in the robot settings accordingly:
 
-    #define K_P 0.6
-    #define K_I 0.8
-    #define K_D 0.5
+#define K_P 0.20      //0.15                      
+#define K_I 0.20       //0.15                      
+#define K_D 0.20       //0.15                     
+/*
+ROBOT ORIENTATION
+         FRONT
+    MOTOR1  MOTOR2  (2WD/ACKERMANN)
+    MOTOR3  MOTOR4  (4WD/MECANUM)
+         BACK
+*/
+#define MOTOR_MAX_RPM 120       
+#define MAX_RPM_RATIO 0.8
+#define MOTOR_OPERATING_VOLTAGE 12
+#define MOTOR_POWER_MAX_VOLTAGE 12
+#define MOTOR_POWER_MEASURED_VOLTAGE 12   
 
-    #define MOTOR_MAX_RPM 100             
-    #define MAX_RPM_RATIO 0.85          
-    #define MOTOR_OPERATING_VOLTAGE 24
-    #define MOTOR_POWER_MAX_VOLTAGE 12
-    #define MOTOR_POWER_MEASURED_VOLTAGE 11.7
+#define COUNTS_PER_REV1 1125 //960
+#define COUNTS_PER_REV2 1074 //960
+#define COUNTS_PER_REV3 1079
+#define COUNTS_PER_REV4 1084
 
-    #define COUNTS_PER_REV1 2200    
-    #define COUNTS_PER_REV2 2200      
-    #define COUNTS_PER_REV3 2200      
-    #define COUNTS_PER_REV4 2200      
-  
-    #define WHEEL_DIAMETER 0.09  
-    #define LR_WHEELS_DISTANCE 0.2  
+#define WHEEL_DIAMETER 0.0605               
+#define LR_WHEELS_DISTANCE 0.20     
 
-    #define PWM_BITS 10
-    #define PWM_FREQUENCY 20000
+#define PWM_BITS 8                         
+#define PWM_FREQUENCY 8000
 
 Constants' Meaning:
 
