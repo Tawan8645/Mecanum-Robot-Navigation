@@ -76,6 +76,7 @@ Supported IMUs:
 - **MPU6050**
 - **MPU9150**
 - **MPU9250**
+- **BNO055**
 
 Supported MAGs:
 
