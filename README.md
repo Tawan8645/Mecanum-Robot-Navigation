@@ -141,35 +141,6 @@ A more advanced setup with a 19V powered computer and USB hub connected to senso
 
 For bigger robots, you can add an emergency switch in between the motor drivers' power supply and motor drivers.
 
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Installation
-
-Depend on your use case, for esp32, the robot can run micro ros wifi transport without a robot computer (eg Pi 4) on it. All the software will be installed on your desktop computer. In other case, all software mentioned in this guide should be installed on the robot computer.
-
-
-
 ### 2. Download linorobot2_hardware
 
     cd $HOME
