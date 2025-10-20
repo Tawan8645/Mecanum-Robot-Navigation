@@ -50,6 +50,16 @@ Setup Platformio
 
     PATH="$PATH:$HOME/.platformio/penv/bin"
 
+### 5. UDEV Rule
+Download the udev rules from Teensy's website:
+
+    wget https://www.pjrc.com/teensy/00-teensy.rules
+
+and copy the file to /etc/udev/rules.d :
+
+    sudo cp 00-teensy.rules /etc/udev/rules.d/
+
+
 ## Building the robot
 
 ### 1. Robot orientation
@@ -141,139 +151,7 @@ A more advanced setup with a 19V powered computer and USB hub connected to senso
 
 For bigger robots, you can add an emergency switch in between the motor drivers' power supply and motor drivers.
 
-### 2. Download linorobot2_hardware
-
-    cd $HOME
-    git clone https://github.com/linorobot/linorobot2_hardware -b $ROS_DISTRO
-
-### 3. Install PlatformIO
-Download and install platformio. [Platformio](https://platformio.org/) allows you to develop, configure, and upload the firmware without the Arduino IDE. This means that you can upload the firmware remotely which is ideal on headless setup especially when all components have already been fixed. 
-    
-    python3 -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
-
-Add platformio to your $PATH:
-
-    echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
-    source $HOME/.bashrc
-
-### 4. UDEV Rule
-Download the udev rules from Teensy's website:
-
-    wget https://www.pjrc.com/teensy/00-teensy.rules
-
-and copy the file to /etc/udev/rules.d :
-
-    sudo cp 00-teensy.rules /etc/udev/rules.d/
-
-### 5. Install Screen Terminal
-
-    sudo apt install screen
-
-## Building the robot
-
-### 1. Robot orientation
-Robot Orientation:
-
--------------FRONT-------------
-
-WHEEL1 WHEEL2 (2WD)
-
-WHEEL3 WHEEL4 (4WD)
-
---------------BACK--------------
-
-If you're building a 2 wheel drive robot, assign `MOTOR1` and `MOTOR2` to the left and right motors respectively.
-
-For mecanum robots, follow the wheels' orientation below.
-
-![mecanum_wheels_orientation](docs/mecanum_wheels_orientation.png)
-
-### 2. Motor Drivers
-
-Supported Motor Drivers:
-
-- **GENERIC_2_IN_MOTOR_DRIVER** - Motor drivers that have EN (pwm) pin, and 2 direction pins (usually DIRA, DIRB pins). Example: L298 Breakout boards.
-
-- **GENERIC_1_IN_MOTOR_DRIVER** - Motor drivers that have EN (pwm) pin, and 1 direction pin (usual DIR pin). These drivers usually have logic gates included to lessen the pins required in controlling the driver. Example: Pololu MC33926 Motor Driver Shield.
-
-- **BTS7960_MOTOR_DRIVER** - BTS7960 motor driver.
-
-- **ESC_MOTOR_DRIVER** - Bi-directional (forward/reverse) electronic speed controllers.
-
-The motor drivers are configurable from the config file explained in the later part of this document.
-
-### 3. Inertial Measurement Unit (IMU)
-
-Supported IMUs:
-
-- **GY-85**
-- **MPU6050**
-- **MPU9150**
-- **MPU9250**
-- **BNO055**
-
-Supported MAGs:
-
-- **HMC5883L**
-- **AK8963**
-- **AK8975**
-- **AK09918**
-- **QMC5883L**
-
-### 4. Connection Diagram
-Below are connection diagrams you can follow for each supported motor driver and IMU. For simplicity, only one motor connection is provided but the same diagram can be used to connect the rest of the motors. You are free to decide which microcontroller pin to use just ensure that the following are met:
-
-- Reserve SCL0 and SDA0 (pins 18 and 19 on Teensy boards) for IMU.
-
-- When connecting the motor driver's EN/PWM pin, ensure that the microcontroller pin used is PWM enabled. You can check out PJRC's [pinout page](https://www.pjrc.com/teensy/pinout.html) for more info.
-
-Alternatively, you can also use the pre-defined pin assignments in lino_base_config.h. Teensy 3.x and 4.x have different mapping of PWM pins, read the notes beside each pin assignment in [lino_base_config.h](https://github.com/linorobot/linorobot2_hardware/blob/master/config/lino_base_config.h#L112) carefully to avoid connecting your driver's PWM pin to a non PWM pin on Teensy. 
-
-All diagrams below are based on Teensy 4.0 microcontroller and GY85 IMU. Click the images for higher resolution.
-
-#### 4.1 GENERIC 2 IN
-
-![generic_2_in_connection](docs/generic_2_in_connection.png)
-
-#### 4.2 GENERIC 1 IN
-
-![generic_1_in_connection](docs/generic_1_in_connection.png)
-
-#### 4.3 BTS7960
-
-![bts7960_connection](docs/bts7960_connection.png)
-
-#### 4.4 IMU
-
-![imu_connection](docs/imu_connection.png)
-
-Take note of the IMU's correct orientation when mounted on the robot. Ensure that the IMU's axes are facing the correct direction:
-
-- **X** - Front
-- **Y** - Left
-- **Z** - Up
-
-#### 4.5 System Diagram
-Reference designs you can follow in building your robot.
-
-A minimal setup with a 5V powered robot computer.
-![minimal_setup](docs/minimal_setup.png)
-
-A more advanced setup with a 19V powered computer and USB hub connected to sensors.
-![advanced_setup](docs/advanced_setup.png)
-
-For bigger robots, you can add an emergency switch in between the motor drivers' power supply and motor drivers.
-
 ## Setting up the firmware
-
-After installed the build enviroment, before touching any code, try building a sample firmware to verify everything is setup properly.
-
-    cd firmware
-    pio run -e teensy41
-    # Or if you are using esp32
-    pio run -e esp32
-
-Then create a custom configuration for your robot. This will minimize the merge conflicts from future pulling the upstream. Add an entry to the end of platformio.ini. Add an entry to ../config/config.h before the LINO_BASE. Take the lino_base_config.h as a template and add your custom configuration file to ../config/custom/ . Make changes to your custom configuration file. The following is an example for esp32 project.
 
 platformio.ini
 ```
