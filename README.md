@@ -2,12 +2,23 @@
 Mecanum Robot Navigation
 
 ### 1. UBUNTO Installation
+Download and install Ubuntu https://ubuntu.com/download/desktop
 
 ### 2. ROS2 and linorobot2 installation
 It is assumed that you already have ROS2 and linorobot2 package installed. If you haven't, go to [linorobot2](https://github.com/linorobot/linorobot2) package for installation guide.
 
+### 3. Install PlatformIO
+Download and install platformio. [Platformio](https://platformio.org/) allows you to develop, configure, and upload the firmware without the Arduino IDE. This means that you can upload the firmware remotely which is ideal on headless setup especially when all components have already been fixed. 
+    
+    python3 -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
 
-### 3. Setup for .bashrc Ubuntu
+Add platformio to your $PATH:
+
+    echo "PATH=\"\$PATH:\$HOME/.platformio/penv/bin\"" >> $HOME/.bashrc
+    source $HOME/.bashrc
+
+
+### 4. Setup for .bashrc Ubuntu
 
     cd 
     nano .bashrc
@@ -64,8 +75,7 @@ Setup Platformio
 
 Depend on your use case, for esp32, the robot can run micro ros wifi transport without a robot computer (eg Pi 4) on it. All the software will be installed on your desktop computer. In other case, all software mentioned in this guide should be installed on the robot computer.
 
-### 1. ROS2 and linorobot2 installation
-It is assumed that you already have ROS2 and linorobot2 package installed. If you haven't, go to [linorobot2](https://github.com/linorobot/linorobot2) package for installation guide.
+
 
 ### 2. Download linorobot2_hardware
 
