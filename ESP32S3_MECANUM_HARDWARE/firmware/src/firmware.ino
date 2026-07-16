@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <Arduino.h>
+#include <Wire.h>
 #include <micro_ros_platformio.h>
 #include <stdio.h>
 
@@ -58,12 +59,16 @@
 #define TOPIC_PREFIX
 #endif
 
+#ifndef CONTROL_TIMER
+#define CONTROL_TIMER 20 // 50 Hz (1000 / 20)
+#endif
+
 #ifndef BATTERY_TIMER
 #define BATTERY_TIMER 2000 // 2 sec
 #endif
 
 #ifndef RANGE_TIMER
-#define RANGE_TIMER 100 // 10Hz
+#define RANGE_TIMER 100 // 10 Hz
 #endif
 
 #ifndef RCCHECK
@@ -105,7 +110,7 @@ unsigned long long time_offset = 0;
 unsigned long prev_cmd_time = 0;
 unsigned long prev_odom_update = 0;
 
-enum states 
+enum states
 {
   WAITING_AGENT,
   AGENT_AVAILABLE,
@@ -129,12 +134,12 @@ PID motor3_pid(PWM_MIN, PWM_MAX, K_P3, K_I3, K_D3);
 PID motor4_pid(PWM_MIN, PWM_MAX, K_P4, K_I4, K_D4);
 
 Kinematics kinematics(
-    Kinematics::ROBOT_BASE, 
-    MOTOR_MAX_RPM, 
-    MAX_RPM_RATIO, 
-    MOTOR_OPERATING_VOLTAGE, 
-    MOTOR_POWER_MAX_VOLTAGE, 
-    WHEEL_DIAMETER, 
+    Kinematics::ROBOT_BASE,
+    MOTOR_MAX_RPM,
+    MAX_RPM_RATIO,
+    MOTOR_OPERATING_VOLTAGE,
+    MOTOR_POWER_MAX_VOLTAGE,
+    WHEEL_DIAMETER,
     LR_WHEELS_DISTANCE
 );
 
@@ -142,7 +147,7 @@ Odometry odometry;
 IMU imu;
 MAG mag;
 
-void setup() 
+void setup()
 {
 #ifdef BOARD_INIT // board specific setup
     BOARD_INIT;
@@ -162,27 +167,38 @@ void setup()
     esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
     esp_task_wdt_add(NULL); //add current thread to WDT watch
 #endif
-    
+
     bool imu_ok = imu.init();
-    if(!imu_ok)
+    if (!imu_ok)
     {
-        while(1)
+        while (1)
         {
             //syslog(LOG_INFO, "%s IMU init failed %lu", __FUNCTION__, millis())
             flashLED(3);
+#ifdef WDT_TIMEOUT
+            // reset the watchdog here too, otherwise a WDT reset will fire
+            // mid-blink instead of giving a clean restart/retry cycle
+            esp_task_wdt_reset();
+#endif
         }
     }
     mag.init();
     initBattery();
     initRange();
     set_microros_serial_transports(Serial);
+
+    // seed this so the very first moveBase() call computes a sane dt
+    // instead of a huge one measured from millis()==0
+    prev_odom_update = millis();
+    prev_cmd_time = millis();
+
     #ifdef BOARD_INIT_LATE // board specific setup
     BOARD_INIT_LATE
     #endif
     //syslog(LOG_INFO, "%s Ready %lu", __FUNCTION__, millis());
 }
 void loop() {
-    switch (state) 
+    switch (state)
     {
         case WAITING_AGENT:
             EXECUTE_EVERY_N_MS(500, state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_AVAILABLE : WAITING_AGENT;);
@@ -190,7 +206,7 @@ void loop() {
         case AGENT_AVAILABLE:
             syslog(LOG_INFO, "%s agent available %lu", __FUNCTION__, millis());
             state = (true == createEntities()) ? AGENT_CONNECTED : WAITING_AGENT;
-            if (state == WAITING_AGENT) 
+            if (state == WAITING_AGENT)
             {
                 destroyEntities();
             }
@@ -199,7 +215,7 @@ void loop() {
 #ifndef USE_STAY_CONNECTED // Stay connected. Do not ping.
             EXECUTE_EVERY_N_MS(200, state = (RMW_RET_OK == rmw_uros_ping_agent(100, 1)) ? AGENT_CONNECTED : AGENT_DISCONNECTED;);
 #endif
-            if (state == AGENT_CONNECTED) 
+            if (state == AGENT_CONNECTED)
             {
                 rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
             }
@@ -213,7 +229,7 @@ void loop() {
         default:
             break;
     }
-    
+
 #ifdef WDT_TIMEOUT
     esp_task_wdt_reset();
 #endif
@@ -222,10 +238,10 @@ void loop() {
 #endif
 }
 
-void controlCallback(rcl_timer_t * timer, int64_t last_call_time) 
+void controlCallback(rcl_timer_t * timer, int64_t last_call_time)
 {
     RCLC_UNUSED(last_call_time);
-    if (timer != NULL) 
+    if (timer != NULL)
     {
        moveBase();
        publishData();
@@ -237,10 +253,10 @@ void batteryCallback(rcl_timer_t * timer, int64_t last_call_time)
     if (timer != NULL)
     {
         battery_msg = getBattery();
-	struct timespec time_stamp = getTime();
-	battery_msg.header.stamp.sec = time_stamp.tv_sec;
-	battery_msg.header.stamp.nanosec = time_stamp.tv_nsec;
-	RCSOFTCHECK(rcl_publish(&battery_publisher, &battery_msg, NULL));
+        struct timespec time_stamp = getTime();
+        battery_msg.header.stamp.sec = time_stamp.tv_sec;
+        battery_msg.header.stamp.nanosec = time_stamp.tv_nsec;
+        RCSOFTCHECK(rcl_publish(&battery_publisher, &battery_msg, NULL));
     }
 }
 
@@ -250,14 +266,14 @@ void rangeCallback(rcl_timer_t * timer, int64_t last_call_time)
     if (timer != NULL)
     {
         range_msg = getRange();
-	struct timespec time_stamp = getTime();
-	range_msg.header.stamp.sec = time_stamp.tv_sec;
-	range_msg.header.stamp.nanosec = time_stamp.tv_nsec;
-	RCSOFTCHECK(rcl_publish(&range_publisher, &range_msg, NULL));
+        struct timespec time_stamp = getTime();
+        range_msg.header.stamp.sec = time_stamp.tv_sec;
+        range_msg.header.stamp.nanosec = time_stamp.tv_nsec;
+        RCSOFTCHECK(rcl_publish(&range_publisher, &range_msg, NULL));
     }
 }
 
-void twistCallback(const void * msgin) 
+void twistCallback(const void * msgin)
 {
     digitalWrite(LED_PIN, !digitalRead(LED_PIN));
 
@@ -273,15 +289,15 @@ bool createEntities()
     // create node
     RCCHECK(rclc_node_init_default(&node, NODE_NAME, "", &support));
     // create odometry publisher
-    RCCHECK(rclc_publisher_init_default( 
-        &odom_publisher, 
+    RCCHECK(rclc_publisher_init_default(
+        &odom_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(nav_msgs, msg, Odometry),
         TOPIC_PREFIX "odom/unfiltered"
     ));
     // create IMU publisher
-    RCCHECK(rclc_publisher_init_default( 
-        &imu_publisher, 
+    RCCHECK(rclc_publisher_init_default(
+        &imu_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
         TOPIC_PREFIX "imu/data"
@@ -292,56 +308,54 @@ bool createEntities()
         ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, MagneticField),
         TOPIC_PREFIX "imu/mag"
     ));
-    // create battery pyblisher
+    // create battery publisher
     RCCHECK(rclc_publisher_init_default(
-	&battery_publisher,
-	&node,
-	ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, BatteryState),
-	TOPIC_PREFIX "battery"
+        &battery_publisher,
+        &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, BatteryState),
+        TOPIC_PREFIX "battery"
     ));
-    // create range pyblisher
+    // create range publisher
     RCCHECK(rclc_publisher_init_default(
-	&range_publisher,
-	&node,
-	ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Range),
-	TOPIC_PREFIX "ultrasound"
+        &range_publisher,
+        &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Range),
+        TOPIC_PREFIX "ultrasound"
     ));
     // create twist command subscriber
-    RCCHECK(rclc_subscription_init_default( 
-        &twist_subscriber, 
+    RCCHECK(rclc_subscription_init_default(
+        &twist_subscriber,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
         TOPIC_PREFIX "cmd_vel"
     ));
-    // create timer for actuating the motors at 50 Hz (1000/20)
-    const unsigned int control_timeout = 20;
+    // create timer for actuating the motors at 50 Hz, using the shared macro
+    // instead of a re-hardcoded local constant
     RCCHECK(rclc_timer_init_default(
         &control_timer,
         &support,
-        RCL_MS_TO_NS(control_timeout),
+        RCL_MS_TO_NS(CONTROL_TIMER),
         controlCallback
     ));
-    const unsigned int battery_timer_timeout = 2000;
     RCCHECK(rclc_timer_init_default(
         &battery_timer,
         &support,
-        RCL_MS_TO_NS(battery_timer_timeout),
+        RCL_MS_TO_NS(BATTERY_TIMER),
         batteryCallback
     ));
-    const unsigned int range_timer_timeout = 100;
     RCCHECK(rclc_timer_init_default(
         &range_timer,
         &support,
-        RCL_MS_TO_NS(range_timer_timeout),
+        RCL_MS_TO_NS(RANGE_TIMER),
         rangeCallback
     ));
     executor = rclc_executor_get_zero_initialized_executor();
-    RCCHECK(rclc_executor_init(&executor, &support.context, 4, & allocator));
+    RCCHECK(rclc_executor_init(&executor, &support.context, 4, &allocator));
     RCCHECK(rclc_executor_add_subscription(
-        &executor, 
-        &twist_subscriber, 
-        &twist_msg, 
-        &twistCallback, 
+        &executor,
+        &twist_subscriber,
+        &twist_msg,
+        &twistCallback,
         ON_NEW_DATA
     ));
     RCCHECK(rclc_executor_add_timer(&executor, &control_timer));
@@ -350,6 +364,9 @@ bool createEntities()
 
     // synchronize time with the agent
     syncTime();
+    // reset these so we don't act on stale timing right after (re)connecting
+    prev_cmd_time = millis();
+    prev_odom_update = millis();
     digitalWrite(LED_PIN, HIGH);
 
     return true;
@@ -378,7 +395,7 @@ bool destroyEntities()
     RCSOFTCHECK(rclc_support_fini(&support));
 
     digitalWrite(LED_PIN, HIGH);
-    
+
     return true;
 }
 
@@ -394,11 +411,9 @@ void fullStop()
     motor4_controller.brake();
 }
 
-// ============================================================
-// 2. Fix moveBase() — check linear.y + avoid redundant fullStop
-// ============================================================
 void moveBase()
 {
+    // command timeout: if no cmd_vel has arrived recently, force a stop
     if ((millis() - prev_cmd_time) >= 200)
     {
         twist_msg.linear.x  = 0.0;
@@ -418,7 +433,7 @@ void moveBase()
     float current_rpm3 = motor3_encoder.getRPM();
     float current_rpm4 = motor4_encoder.getRPM();
 
-    // ✅ FIXED: ตรวจ linear.y ด้วย
+    // check linear.y too (holonomic bases), not just x/angular.z
     if (twist_msg.linear.x == 0.0 &&
         twist_msg.linear.y == 0.0 &&
         twist_msg.angular.z == 0.0)
@@ -438,7 +453,7 @@ void moveBase()
     );
 
     unsigned long now = millis();
-    float vel_dt = (now - prev_odom_update) / 1000.0f;  // ✅ ใช้ 1000.0f แทน 1000.0
+    float vel_dt = (now - prev_odom_update) / 1000.0f;
     prev_odom_update = now;
     odometry.update(vel_dt, current_vel.linear_x, current_vel.linear_y, current_vel.angular_z);
 }
@@ -457,9 +472,9 @@ void publishData()
 #endif
 
     double roll, pitch, yaw;
-    // ✅ FIXED: x ใน numerator ของ pitch
     roll  = atan2(imu_msg.linear_acceleration.y,
                   imu_msg.linear_acceleration.z);
+    // x goes in the numerator for pitch
     pitch = atan2(-imu_msg.linear_acceleration.x,
                   sqrt(imu_msg.linear_acceleration.y * imu_msg.linear_acceleration.y +
                        imu_msg.linear_acceleration.z * imu_msg.linear_acceleration.z));
@@ -493,9 +508,10 @@ bool syncTime()
     const int timeout_ms = 1000;
     if (rmw_uros_epoch_synchronized()) return true;
 
-    RCCHECK(rmw_uros_sync_session(timeout_ms));
-
-    // ✅ FIXED: ใช้ soft check แทน RCCHECK
+    // call sync_session exactly once and use its own result — the previous
+    // version called it twice in a row (once unchecked via RCCHECK, then
+    // again for the soft check), which wastes a full round trip to the
+    // agent and could double-apply a bad session state
     if (RMW_RET_OK != rmw_uros_sync_session(timeout_ms)) return false;
 
     if (rmw_uros_epoch_synchronized()) {
@@ -530,17 +546,20 @@ struct timespec getTime()
     return tp;
 }
 
-void rclErrorLoop() 
+void rclErrorLoop()
 {
-    while(true)
+    while (true)
     {
         flashLED(2);
+#ifdef WDT_TIMEOUT
+        esp_task_wdt_reset();
+#endif
     }
 }
 
 void flashLED(int n_times)
 {
-    for(int i=0; i<n_times; i++)
+    for (int i = 0; i < n_times; i++)
     {
         digitalWrite(LED_PIN, HIGH);
         delay(150);

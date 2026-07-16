@@ -48,13 +48,13 @@ Motor motor2_controller(PWM_FREQUENCY, PWM_BITS, MOTOR2_INV, MOTOR2_PWM, MOTOR2_
 Motor motor3_controller(PWM_FREQUENCY, PWM_BITS, MOTOR3_INV, MOTOR3_PWM, MOTOR3_IN_A, MOTOR3_IN_B);
 Motor motor4_controller(PWM_FREQUENCY, PWM_BITS, MOTOR4_INV, MOTOR4_PWM, MOTOR4_IN_A, MOTOR4_IN_B);
 
-PID motor1_pid(PWM_MIN, PWM_MAX, K_P, K_I, K_D);
-PID motor2_pid(PWM_MIN, PWM_MAX, K_P, K_I, K_D);
-PID motor3_pid(PWM_MIN, PWM_MAX, K_P, K_I, K_D);
-PID motor4_pid(PWM_MIN, PWM_MAX, K_P, K_I, K_D);
+PID motor1_pid(PWM_MIN, PWM_MAX, K_P1, K_I1, K_D1);
+PID motor2_pid(PWM_MIN, PWM_MAX, K_P2, K_I2, K_D2);
+PID motor3_pid(PWM_MIN, PWM_MAX, K_P3, K_I3, K_D3);
+PID motor4_pid(PWM_MIN, PWM_MAX, K_P4, K_I4, K_D4);
 
 Kinematics kinematics(
-    Kinematics::LINO_BASE,
+    Kinematics::ROBOT_BASE,
     MOTOR_MAX_RPM,
     MAX_RPM_RATIO,
     MOTOR_OPERATING_VOLTAGE,
@@ -133,7 +133,7 @@ void loop()
 }
 void testMotorForTicksPerRevolution()
 {
-    if (Kinematics::LINO_BASE == Kinematics::DIFFERENTIAL_DRIVE)
+    if (Kinematics::ROBOT_BASE == Kinematics::DIFFERENTIAL_DRIVE)
     {
         total_motors = 2;
     }
@@ -199,7 +199,7 @@ void testMotorForTicksPerRevolution()
 }
 void testMotorsWithCmdVel()
 {
-    if (Kinematics::LINO_BASE == Kinematics::DIFFERENTIAL_DRIVE)
+    if (Kinematics::ROBOT_BASE == Kinematics::DIFFERENTIAL_DRIVE)
     {
         total_motors = 2;
     }
@@ -267,7 +267,7 @@ void testMotorsWithCmdVel()
 }
 void sampleMotors(bool show_summary)
 {
-    if (Kinematics::LINO_BASE == Kinematics::DIFFERENTIAL_DRIVE)
+    if (Kinematics::ROBOT_BASE == Kinematics::DIFFERENTIAL_DRIVE)
     {
         total_motors = 2;
     }
